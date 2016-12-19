@@ -1,0 +1,11 @@
+django==1.10.3
+
+pyphen==0.9.4
+CommonMark==0.7.2
+bleach==1.5.0
+html5lib==0.9999999
+smartypants==1.8.6
+
+pytest==3.0.3
+pytest-django==3.0.0
+pytest-pythonpath==0.7.1
