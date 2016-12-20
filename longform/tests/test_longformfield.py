@@ -1,11 +1,3 @@
-# coding: utf-8
-"""
-=================================
-longform.tests.test_longformfield
-=================================
-
-"""
-
 import pytest
 
 from django.db import models

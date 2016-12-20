@@ -17,6 +17,17 @@ setup(
     long_description=README,
     author='Your Name',
     author_email='yourname@example.com',
+    install_requires=[
+        'bleach==1.5.0',
+        'CommonMark==0.7.2',
+        'configparser==3.5.0',
+        'html5lib==0.9999999',
+        'py==1.4.31',
+        'pyphen==0.9.4',
+        'pytest==3.0.3',
+        'six==1.10.0',
+        'smartypants==1.8.6',
+    ],
     classifiers=[
         'Environment :: Web Environment',
         'Framework :: Django',
