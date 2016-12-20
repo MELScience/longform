@@ -1,27 +1,33 @@
-import pytest
+# coding: utf-8
+"""
+================================
+longform.tests.test_process_text
+================================
 
-from .. import helpers, longform_samples
+"""
+
+from .. import helpers
 
 
 def _strip_special_chars(result):
     return (result
-            .replace("\xa0", " ")
-            .replace("\xad", "")
+            .replace('\xa0', ' ')
+            .replace('\xad', '')
             .strip())
 
 
 def test_safety():
-    text = """
+    text = '''
 I am a hacker. <script>alert("hello there!")</script>
-    """
-    assert "<script>" not in helpers.process_text(text)
-    assert "<script>" in helpers.process_text(text, sanitize=False)
+    '''
+    assert '<script>' not in helpers.process_text(text)
+    assert '<script>' in helpers.process_text(text, sanitize=False)
 
 
 def test_p_stripping():
-    text = "# The **big** thing"
+    text = '# The **big** thing'
     result = _strip_special_chars(helpers.process_text(text))
-    assert result == "<h1>The <strong>big</strong> thing</h1>"
+    assert result == '<h1>The <strong>big</strong> thing</h1>'
 
 
 def test_linkification():
@@ -38,16 +44,16 @@ And we can have [markdown link](https://stripe.com)
 
 
 def test_smartypants():
-    text = "Look... This is so smart --- you can have this, too"
+    text = 'Look... This is so smart --- you can have this, too'
     result = _strip_special_chars(helpers.process_text(text))
-    assert "…" in result
-    assert "—" in result
+    assert '…' in result
+    assert '—' in result
 
 
 def test_hyphenation():
-    text = "Strange word: impersonation"
+    text = 'Strange word: impersonation'
     result = helpers.process_text(text)
-    assert "im\xadper\xadson\xadation" in result
+    assert 'im\xadper\xadson\xadation' in result
 
 
 def test_widont_oneword():

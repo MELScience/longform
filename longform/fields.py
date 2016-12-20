@@ -1,3 +1,11 @@
+# coding: utf-8
+"""
+===============
+longform.fields
+===============
+
+"""
+
 from django.db import models
 
 from .helpers import process_text
