@@ -48,6 +48,24 @@ def test_hyphenation():
     assert 'im\xadper\xadson\xadation' in result
 
 
+def test_subscript():
+    text = 'H~2~O'
+    result = helpers.process_text(text, strip_outer_p=True)
+    assert 'H<sub>2</sub>O' == result
+
+
+def test_supscript():
+    text = '10^2^'
+    result = helpers.process_text(text, strip_outer_p=True)
+    assert '10<sup>2</sup>' == result
+
+
+def test_supscript_with_space():
+    text = '10^2 ^'
+    result = helpers.process_text(text, strip_outer_p=True)
+    assert '10^2 ^' == result
+
+
 def test_widont_oneword():
     text = """
 1. Study of the world around

@@ -37,4 +37,4 @@ def test_args():
     instance.save()
     instance.refresh_from_db()
     assert instance.text.strip() == \
-        'Mi\xada\xadmi\xa0<script>Ul\xadtras</script>'
+        'Mi\xada\xadmi <script>Ul\xadtras</script>'
