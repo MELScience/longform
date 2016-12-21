@@ -1,6 +1,7 @@
 import re
 
 from urllib.parse import urlparse
+from subprocess import Popen, PIPE
 
 import bleach
 import CommonMark
@@ -15,6 +16,12 @@ from html5lib.tokenizer import HTMLTokenizer
 hyphen_dict = pyphen.Pyphen(lang='en_US')
 
 re_hyphenate_word = re.compile(r'\w{5,}')
+
+
+def exec_mj_statement(statement):
+    """Call externall app, to convert mj statement to svg."""
+    proc = Popen(['node', './js/single-eq.js', statement], stdout=PIPE)
+    return proc.stdout.read().decode('utf-8')
 
 
 def _hyphenate(text):
@@ -97,6 +104,16 @@ def _strip_outer_p(html):
     else:
         return matchobj.group(1)
 
+re_mj_statement = re.compile(r'\$([^\$]*)\$')
+
+
+def _install_mathjax(html):
+    """Find any existing mathjax inline and replace it with svg."""
+    def set_mj(matchobj):
+        return exec_mj_statement(matchobj.group(1))
+
+    return re_mj_statement.sub(set_mj, html)
+
 
 def process_text(raw, sanitize=True, strip_outer_p=False):
     """
@@ -122,10 +139,10 @@ def process_text(raw, sanitize=True, strip_outer_p=False):
     sanitized = _smartypants(sanitized)
 
     html = CommonMark.commonmark(sanitized)
-
     html = _widont(html)
     html = _linkify_all(html)
     html = _hyphenate_html(html)
+    html = _install_mathjax(html)
 
     if strip_outer_p:
         html = _strip_outer_p(html)

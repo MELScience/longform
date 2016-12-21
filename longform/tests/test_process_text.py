@@ -1,4 +1,7 @@
+from .utils import setup_prealoder
 from .. import helpers
+
+preload_example = setup_prealoder(__file__)
 
 
 def _strip_special_chars(result):
@@ -64,6 +67,18 @@ def test_supscript_with_space():
     text = '10^2 ^'
     result = helpers.process_text(text, strip_outer_p=True)
     assert '10^2 ^' == result
+
+
+def test_mj_emc_statement():
+    text = 'here is mj: $E = mc^2$!'
+    result = helpers.process_text(text)
+    expected = preload_example('mj_emc_test.txt')
+    assert expected == result
+
+
+def test_external_mj_processor():
+    expected = preload_example('mj_x2.txt')
+    assert helpers.exec_mj_statement('x^2') == expected
 
 
 def test_widont_oneword():
