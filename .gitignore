@@ -5,3 +5,5 @@ __pycache__/
 django_longform.egg-info/
 node_modules/
 *.pyc
+dist/
+build/
