@@ -5,10 +5,9 @@ from .. import helpers
 
 def _strip_special_chars(result):
     return (result
-            .replace("\xa0", " ")
-            .replace("\xad", "")
+            .replace('\xa0', ' ')
+            .replace('\xad', '')
             .strip())
-
 
 class ProcessTextTestCase(TestCase):
     def test_safety(self):
@@ -44,13 +43,26 @@ And we can have [markdown link](https://stripe.com)
         result = _strip_special_chars(helpers.process_text(text))
         self.assertIn("…", result)
         self.assertIn("—", result)
-
-
+        
     def test_hyphenation(self):
         text = "Strange word: impersonation"
         result = helpers.process_text(text)
         self.assertIn("im\xadper\xadson\xadation", result)
+       
+    def test_subscript(self):
+        text = 'H~2~O'
+        result = helpers.process_text(text, strip_outer_p=True)
+        self.assertEqual('H<sub>2</sub>O', result)
 
+    def test_supscript(self):
+        text = '10^2^'
+        result = helpers.process_text(text, strip_outer_p=True)
+        self.assertEqual('10<sup>2</sup>', result)
+
+    def test_supscript_with_space(self):
+        text = '10^2 ^'
+        result = helpers.process_text(text, strip_outer_p=True)
+        self.assertEqual('10^2 ^', result)
 
     def test_widont_oneword(self):
         text = """

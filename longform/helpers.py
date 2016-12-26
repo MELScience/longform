@@ -1,9 +1,10 @@
 import re
 
+from functools import partial
 from urllib.parse import urlparse
 
 import bleach
-import CommonMark
+import CommonMark as cm
 import html5lib
 import pyphen
 import smartypants
@@ -13,6 +14,42 @@ from html5lib.tokenizer import HTMLTokenizer
 
 
 hyphen_dict = pyphen.Pyphen(lang="en_US")
+
+
+def insert_node_to_ast(tag, block, matchedobj):
+    """Insert trivial block inside of given block in ast node."""
+    target_eq = matchedobj.groups()[1]
+    block.t = 'html_inline'
+    return '<{tag}>{val}</{tag}>'.format(tag=tag, val=target_eq)
+
+
+re_inlines_to_replace = (
+    (re.compile(r'(~([^ ]*)~)'), partial(insert_node_to_ast, 'sub')),
+    (re.compile(r'(\^([^ ]*)\^)'), partial(insert_node_to_ast, 'sup')),
+)
+
+
+def inject_subsup_tags(ast):
+    """Add sub/sup tags support."""
+    walker = ast.walker()
+    for node, entering in walker:
+        if node.t != 'text':
+            continue
+
+        for regex, mutate_fn in re_inlines_to_replace:
+            # NB! node is also update in following loc
+            node.literal = regex.sub(partial(mutate_fn, node), node.literal)
+
+    return ast
+
+
+def process_with_common_mark(raw_text):
+    """Exec given text, add own processing based on commonmark's ast."""
+    parser = cm.Parser()
+    ast = parser.parse(raw_text)
+    ast = inject_subsup_tags(ast)
+
+    return cm.HtmlRenderer().render(ast)
 
 re_hyphenate_word = re.compile(r"\w{5,}")
 
@@ -117,8 +154,7 @@ def process_text(raw, sanitize=True, strip_outer_p=False):
 
     sanitized = _smartypants(sanitized)
 
-    html = CommonMark.commonmark(sanitized)
-
+    html = process_with_common_mark(sanitized)
     html = _widont(html)
     html = _linkify_all(html)
     html = _hyphenate_html(html)

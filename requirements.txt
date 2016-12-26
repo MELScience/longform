@@ -5,7 +5,7 @@
 #    pip-compile --output-file requirements.txt requirements.in
 #
 bleach==1.5.0
-CommonMark==0.7.2
+commonmark==0.7.2
 configparser==3.5.0       # via flake8
 django==1.10.3
 enum34==1.1.6             # via flake8
