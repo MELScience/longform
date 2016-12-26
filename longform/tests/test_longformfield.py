@@ -1,18 +1,18 @@
-from django.db import models
-
 import pytest
+
+from django.db import models
 
 from ..fields import LongformField
 
 
 class LongformModel(models.Model):
     text_raw = models.TextField()
-    text = LongformField(raw_field='text_raw')
+    text = LongformField(raw_field="text_raw")
 
 
 class LongformModelArgs(models.Model):
     text_raw = models.TextField()
-    text = LongformField(raw_field='text_raw',
+    text = LongformField(raw_field="text_raw",
                          sanitize=False,
                          strip_outer_p=True)
 

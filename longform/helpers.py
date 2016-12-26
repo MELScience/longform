@@ -1,55 +1,51 @@
 import re
-from urllib.parse import urlparse
 
-from django.conf import settings
+from urllib.parse import urlparse
 
 import bleach
 import CommonMark
 import html5lib
-from html5lib.tokenizer import HTMLTokenizer
 import pyphen
 import smartypants
 
+from django.conf import settings
+from html5lib.tokenizer import HTMLTokenizer
 
-hyphen_dict = pyphen.Pyphen(lang='en_US')
 
+hyphen_dict = pyphen.Pyphen(lang="en_US")
 
 re_hyphenate_word = re.compile(r"\w{5,}")
+
 
 def _hyphenate(text):
     def add_hyphens(matchobj):
         # NOTE(si14): \xad = &shy;
-        return hyphen_dict.inserted(matchobj.group(0), "\xad")
+        return hyphen_dict.inserted(matchobj.group(0), '\xad')
     return re_hyphenate_word.sub(add_hyphens, text)
+
 
 def _hyphenate_html(html):
     def hyphen_gen(stream):
         for el in stream:
-            if el['type'] == 'Characters':
-                text = el['data']
+            if el["type"] == "Characters":
+                text = el["data"]
 
-                text = _hyphenate(el['data'])
+                text = _hyphenate(el["data"])
 
                 el['data'] = text
 
             yield el
 
     doc = html5lib.parseFragment(html, namespaceHTMLElements=False)
-
-    walker = html5lib.getTreeWalker("etree")
+    walker = html5lib.getTreeWalker('etree')
     stream = walker(doc)
-
     stream = hyphen_gen(stream)
 
-    output = html5lib.serializer.HTMLSerializer().render(stream)
-
-    return output
+    return html5lib.serializer.HTMLSerializer().render(stream)
 
 
 def _smartypants(text):
-    attrs = (smartypants.Attr.b
-             | smartypants.Attr.D
-             | smartypants.Attr.e)
+    attrs = (smartypants.Attr.b | smartypants.Attr.D | smartypants.Attr.e)
     return (smartypants.smartypants(text, attrs)
             .replace("&#8211;", "–")
             .replace("&#8212;", "—")
@@ -59,6 +55,7 @@ def _smartypants(text):
 
 
 re_widont = re.compile(r"\s+([^\s^>]+\s*(</p>|</li>|</h\d>))")
+
 
 def _widont(text, count=1):
     def add_nbsp(matchobj):
@@ -72,13 +69,13 @@ def _widont(text, count=1):
 
 def _linkify_all(html):
     def set_target(attrs, new=False):
-        if attrs['href'].startswith('mailto:'):
+        if attrs["href"].startswith("mailto:"):
             return attrs
-        p = urlparse(attrs['href'])
+        p = urlparse(attrs["href"])
         if p.netloc not in settings.OUR_DOMAINS:
-            attrs['target'] = "_blank"
-            attrs['rel'] = "noopener noreferrer nofollow"
-            attrs['class'] = "external"
+            attrs["target"] = "_blank"
+            attrs["rel"] = "noopener noreferrer nofollow"
+            attrs["class"] = "external"
         return attrs
     # NOTE(si14): we use plain HTMLTokenizer here to avoid sanitizing by
     #             bleach
@@ -87,6 +84,7 @@ def _linkify_all(html):
 
 
 re_strip_outer_p = re.compile(r"^<p>(.*)</p>$", flags=re.DOTALL)
+
 
 def _strip_outer_p(html):
     matchobj = re_strip_outer_p.match(html)

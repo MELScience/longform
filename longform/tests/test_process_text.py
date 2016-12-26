@@ -1,6 +1,4 @@
-import pytest
-
-from .. import helpers, longform_samples
+from .. import helpers
 
 
 def _strip_special_chars(result):
@@ -31,10 +29,10 @@ There is a link https://google.com somewhere here
 And we can have [markdown link](https://stripe.com)
     """
     result = _strip_special_chars(helpers.process_text(text))
-    assert 'href=https://google.com' in result
-    assert '>https://google.com</a>' in result
-    assert 'href=https://stripe.com' in result
-    assert '>markdown link</a>' in result
+    assert "href=https://google.com" in result
+    assert ">https://google.com</a>" in result
+    assert "href=https://stripe.com" in result
+    assert ">markdown link</a>" in result
 
 
 def test_smartypants():

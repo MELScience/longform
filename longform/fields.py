@@ -18,8 +18,8 @@ class LongformField(models.TextField):
         self.sanitize = sanitize
         self.strip_outer_p = strip_outer_p
 
-        kwargs.setdefault('blank', True)
-        kwargs.setdefault('editable', False)
+        kwargs.setdefault("blank", True)
+        kwargs.setdefault("editable", False)
 
         super().__init__(*args, **kwargs)
 
@@ -36,8 +36,8 @@ class LongformField(models.TextField):
     def deconstruct(self):
         name, path, args, kwargs = super().deconstruct()
 
-        kwargs['raw_field'] = self.raw_field_name
-        kwargs['sanitize'] = self.sanitize
-        kwargs['strip_outer_p'] = self.strip_outer_p
+        kwargs["raw_field"] = self.raw_field_name
+        kwargs["sanitize"] = self.sanitize
+        kwargs["strip_outer_p"] = self.strip_outer_p
 
         return name, path, args, kwargs
