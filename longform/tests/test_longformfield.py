@@ -1,6 +1,5 @@
-import pytest
-
 from django.db import models
+from django.test import TestCase
 
 from ..fields import LongformField
 
@@ -17,24 +16,24 @@ class LongformModelArgs(models.Model):
                          strip_outer_p=True)
 
 
-@pytest.mark.django_db
-def test_fill_on_save():
-    instance = LongformModel(text_raw='*Pearl* Fountain')
-    instance.save()
-    instance.refresh_from_db()
-    assert instance.text.strip() == '<p><em>Pearl</em>\xa0Foun\xadtain</p>'
+class LongformFieldTestCase(TestCase):
+    def test_fill_on_save(self):
+        instance = LongformModel(text_raw="*Pearl* Fountain")
+        instance.save()
+        instance.refresh_from_db()
+        self.assertEqual(instance.text.strip(),
+                         "<p><em>Pearl</em>\xa0Foun\xadtain</p>")
 
-    instance.text_raw = 'More <script>Stacks</script>'
-    instance.save()
-    instance.refresh_from_db()
-    assert instance.text.strip() == \
-        '<p>More\xa0&lt;script&gt;Stacks&lt;/script&gt;</p>'
+        instance.text_raw = "More <script>Stacks</script>"
+        instance.save()
+        instance.refresh_from_db()
+        self.assertEqual(instance.text.strip(),
+                         "<p>More\xa0&lt;script&gt;Stacks&lt;/script&gt;</p>")
 
 
-@pytest.mark.django_db
-def test_args():
-    instance = LongformModelArgs(text_raw='Miami <script>Ultras</script>')
-    instance.save()
-    instance.refresh_from_db()
-    assert instance.text.strip() == \
-        'Mi\xada\xadmi <script>Ul\xadtras</script>'
+    def test_args(self):
+        instance = LongformModelArgs(text_raw="Miami <script>Ultras</script>")
+        instance.save()
+        instance.refresh_from_db()
+        self.assertEqual(instance.text.strip(),
+                         "Mi\xada\xadmi <script>Ul\xadtras</script>")

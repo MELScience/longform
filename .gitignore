@@ -4,3 +4,5 @@ env/
 __pycache__/
 django_longform.egg-info/
 *.pyc
+dist/
+build/
