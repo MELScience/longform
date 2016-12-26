@@ -30,7 +30,6 @@ class LongformFieldTestCase(TestCase):
         self.assertEqual(instance.text.strip(),
                          "<p>More\xa0&lt;script&gt;Stacks&lt;/script&gt;</p>")
 
-
     def test_args(self):
         instance = LongformModelArgs(text_raw="Miami <script>Ultras</script>")
         instance.save()

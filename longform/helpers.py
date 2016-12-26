@@ -51,6 +51,7 @@ def process_with_common_mark(raw_text):
 
     return cm.HtmlRenderer().render(ast)
 
+
 re_hyphenate_word = re.compile(r"\w{5,}")
 
 

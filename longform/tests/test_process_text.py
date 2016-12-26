@@ -9,6 +9,7 @@ def _strip_special_chars(result):
             .replace('\xad', '')
             .strip())
 
+
 class ProcessTextTestCase(TestCase):
     def test_safety(self):
         text = """
@@ -17,12 +18,10 @@ I am a hacker. <script>alert("hello there!")</script>
         self.assertNotIn("<script>", helpers.process_text(text))
         self.assertIn("<script>", helpers.process_text(text, sanitize=False))
 
-
     def test_p_stripping(self):
         text = "# The **big** thing"
         result = _strip_special_chars(helpers.process_text(text))
         self.assertEqual(result, "<h1>The <strong>big</strong> thing</h1>")
-
 
     def test_linkification(self):
         text = """
@@ -37,18 +36,17 @@ And we can have [markdown link](https://stripe.com)
         self.assertIn("href=https://stripe.com", result)
         self.assertIn(">markdown link</a>", result)
 
-
     def test_smartypants(self):
         text = "Look... This is so smart --- you can have this, too"
         result = _strip_special_chars(helpers.process_text(text))
         self.assertIn("…", result)
         self.assertIn("—", result)
-        
+
     def test_hyphenation(self):
         text = "Strange word: impersonation"
         result = helpers.process_text(text)
         self.assertIn("im\xadper\xadson\xadation", result)
-       
+
     def test_subscript(self):
         text = 'H~2~O'
         result = helpers.process_text(text, strip_outer_p=True)
