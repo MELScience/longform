@@ -1,3 +1,5 @@
--r requirements.txt
 pip-tools==1.7.0
-django_debug_toolbar==1.6
+
+flake8-docstrings==1.0.2
+flake8-import-order==0.9.2
+flake8==3.2.1
