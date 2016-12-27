@@ -69,11 +69,11 @@ And we can have [markdown link](https://stripe.com)
         text = 'here is mj: $E = mc^2$!'
         result = helpers.process_text(text)
         expected = preload_example('mj_emc_test.html')
-        assert expected == result
+        self.assertEqual(expected, result)
 
     def test_external_mj_processor(self):
         expected = preload_example('mj_x2.html')
-        assert helpers.exec_mj_statement('x^2') == expected
+        self.assertEqual(helpers.exec_mj_statement('x^2'), expected)
 
     def test_widont_oneword(self):
         text = """
@@ -90,3 +90,30 @@ And we can have [markdown link](https://stripe.com)
 """
         result = helpers.process_text(text)
         self.assertEqual(result.strip(), required_result.strip())
+
+
+class TestMJRegex(TestCase):
+
+    mj_findall = helpers.re_mj_statement.findall
+
+    def test_simple_math(self):
+        self.assertEqual(self.mj_findall('$2 + 3$'), ['2 + 3'])
+
+    def test_simple_math_plus_space(self):
+        self.assertEqual(self.mj_findall('$2 + 3 $'), ['2 + 3'])
+
+    def test_simple_false(self):
+        self.assertEqual(self.mj_findall('$ 2 + 3 $'), [])
+
+    def test_false_if_not_followed_by_space(self):
+        self.assertEqual(self.mj_findall('$2 + 3$4'), [])
+
+    def test_false_if_not_followed_by_space_and_space_before(self):
+        self.assertEqual(self.mj_findall('$2 + 3 $4'), [])
+
+    def test_true_if_followed_by_letter(self):
+        self.assertEqual(self.mj_findall('$2 + 3$a4'), ['2 + 3'])
+
+    def test_emc(self):
+        text = 'here is mj: $E = mc^2$'
+        self.assertEqual(helpers.re_mj_statement.findall(text), ['E = mc^2'])

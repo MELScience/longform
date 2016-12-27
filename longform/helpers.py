@@ -138,7 +138,7 @@ def _strip_outer_p(html):
     else:
         return matchobj.group(1)
 
-re_mj_statement = re.compile(r'\$([^\$]*)\$')
+re_mj_statement = re.compile(r'\$(?!\s)(.*?)\s*\$(?=\s|\<|!|$|[a-z])')
 
 
 def _install_mathjax(html):
