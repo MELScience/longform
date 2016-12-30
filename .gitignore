@@ -1,8 +1,10 @@
 .cache
 venv/
 env/
+node_modules/
 __pycache__/
 django_longform.egg-info/
 *.pyc
 dist/
 build/
+db.sqlite3

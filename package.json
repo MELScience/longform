@@ -1,0 +1,9 @@
+{
+  "name": "longform",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "dependencies": {
+    "mathjax-node": "0.5.2"
+  }
+}

@@ -1,6 +1,7 @@
 import re
 
 from functools import partial
+from subprocess import PIPE, Popen
 from urllib.parse import urlparse
 
 import bleach
@@ -9,7 +10,9 @@ import html5lib
 import pyphen
 import smartypants
 
+from django.apps import apps
 from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
 from html5lib.tokenizer import HTMLTokenizer
 
 
@@ -53,6 +56,16 @@ def process_with_common_mark(raw_text):
 
 
 re_hyphenate_word = re.compile(r"\w{5,}")
+
+
+def exec_mj_statement(statement):
+    """Call externall app, to convert mj statement to svg."""
+    mj_script_path = apps.get_app_config('longform').mj_script_path
+    if not mj_script_path:
+        raise ImproperlyConfigured('Mathjax script not found.')
+
+    proc = Popen(['node', mj_script_path, statement], stdout=PIPE)
+    return proc.stdout.read().decode('utf-8')
 
 
 def _hyphenate(text):
@@ -110,7 +123,7 @@ def _linkify_all(html):
         if attrs["href"].startswith("mailto:"):
             return attrs
         p = urlparse(attrs["href"])
-        if p.netloc not in settings.OUR_DOMAINS:
+        if p.netloc not in getattr(settings, 'OUR_DOMAINS', []):
             attrs["target"] = "_blank"
             attrs["rel"] = "noopener noreferrer nofollow"
             attrs["class"] = "external"
@@ -130,6 +143,17 @@ def _strip_outer_p(html):
         return html
     else:
         return matchobj.group(1)
+
+
+re_mj_statement = re.compile(r'\$(?!\s)(.*?)\s*\$(?=\s|\<|!|$|[a-z])')
+
+
+def _install_mathjax(html):
+    """Find any existing mathjax inline and replace it with svg."""
+    def set_mj(matchobj):
+        return exec_mj_statement(matchobj.group(1))
+
+    return re_mj_statement.sub(set_mj, html)
 
 
 def process_text(raw, sanitize=True, strip_outer_p=False):
@@ -159,6 +183,8 @@ def process_text(raw, sanitize=True, strip_outer_p=False):
     html = _widont(html)
     html = _linkify_all(html)
     html = _hyphenate_html(html)
+    if getattr(settings, 'LONGFORM_ENABLE_MATHJAX', False):
+        html = _install_mathjax(html)
 
     if strip_outer_p:
         html = _strip_outer_p(html)

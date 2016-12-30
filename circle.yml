@@ -7,6 +7,5 @@ machine:
     version: 3.5.1
 
 test:
-  post:  # we do this in "post" to avoid interfering with usual test deps
+  pre:  # we do this in "post" to avoid interfering with usual test deps
     - pip install -r requirements.dev.txt
-    - make flake8
