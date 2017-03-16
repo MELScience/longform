@@ -27,8 +27,8 @@ def insert_node_to_ast(tag, block, matchedobj):
 
 
 re_inlines_to_replace = (
-    (re.compile(r'(~([^ ]*)~)'), partial(insert_node_to_ast, 'sub')),
-    (re.compile(r'(\^([^ ]*)\^)'), partial(insert_node_to_ast, 'sup')),
+    (re.compile(r'(~([^ ~]*)~)'), partial(insert_node_to_ast, 'sub')),
+    (re.compile(r'(\^([^ \^]*)\^)'), partial(insert_node_to_ast, 'sup')),
 )
 
 

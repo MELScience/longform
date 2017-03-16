@@ -55,10 +55,20 @@ And we can have [markdown link](https://stripe.com)
         result = helpers.process_text(text, strip_outer_p=True)
         self.assertEqual('H<sub>2</sub>O', result)
 
+    def test_multiple_subscripts(self):
+        text = 'H~2~SO~4~'
+        result = helpers.process_text(text, strip_outer_p=True)
+        self.assertEqual('H<sub>2</sub>SO<sub>4</sub>', result)
+
     def test_supscript(self):
         text = '10^2^'
         result = helpers.process_text(text, strip_outer_p=True)
         self.assertEqual('10<sup>2</sup>', result)
+
+    def test_multiple_supscripts(self):
+        text = '10^2^foo^bar^'
+        result = helpers.process_text(text, strip_outer_p=True)
+        self.assertEqual('10<sup>2</sup>foo<sup>bar</sup>', result)
 
     def test_supscript_with_space(self):
         text = '10^2 ^'
