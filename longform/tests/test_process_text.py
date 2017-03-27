@@ -34,9 +34,9 @@ And we can have [markdown link](https://stripe.com)
         """
         result = _strip_special_chars(helpers.process_text(text))
 
-        self.assertIn("href=https://google.com", result)
+        self.assertIn("href=\"https://google.com\"", result)
         self.assertIn(">https://google.com</a>", result)
-        self.assertIn("href=https://stripe.com", result)
+        self.assertIn("href=\"https://stripe.com\"", result)
         self.assertIn(">markdown link</a>", result)
 
     def test_smartypants(self):

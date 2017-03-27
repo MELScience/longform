@@ -13,7 +13,6 @@ import smartypants
 from django.apps import apps
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
-from html5lib.tokenizer import HTMLTokenizer
 
 
 hyphen_dict = pyphen.Pyphen(lang="en_US")
@@ -120,18 +119,18 @@ def _widont(text, count=1):
 
 def _linkify_all(html):
     def set_target(attrs, new=False):
-        if attrs["href"].startswith("mailto:"):
+        if attrs[(None, 'href')].startswith("mailto:"):
             return attrs
-        p = urlparse(attrs["href"])
+        p = urlparse(attrs[(None, 'href')])
         if p.netloc not in getattr(settings, 'OUR_DOMAINS', []):
-            attrs["target"] = "_blank"
-            attrs["rel"] = "noopener noreferrer nofollow"
-            attrs["class"] = "external"
+            attrs[(None, 'target')] = "_blank"
+            attrs[(None, 'rel')] = "noopener noreferrer nofollow"
+            attrs[(None, 'class')] = "external"
         return attrs
-    # NOTE(si14): we use plain HTMLTokenizer here to avoid sanitizing by
-    #             bleach
-    return bleach.linkify(html, skip_pre=True, callbacks=[set_target],
-                          tokenizer=HTMLTokenizer)
+    return bleach.linkify(html,
+                          skip_tags=['pre'],
+                          callbacks=[set_target],
+                          parse_email=True)
 
 
 re_strip_outer_p = re.compile(r"^<p>(.*)</p>$", flags=re.DOTALL)

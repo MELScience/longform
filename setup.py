@@ -11,7 +11,7 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name='django-longform',
-    version='0.1',
+    version='0.2',
     packages=find_packages(),
     include_package_data=True,
     license='BSD License',
@@ -22,9 +22,9 @@ setup(
     author_email='dmitry.groshev@melscience.com',
     install_requires=[
         'django>=1.9',
-        'bleach>=1.5.0',
+        'bleach==2.0',
+        'html5lib==1.0b10',
         'CommonMark>=0.7.2',
-        'html5lib>=0.9999999,<0.99999999',
         'pyphen>=0.9.4',
         'smartypants>=1.8.6',
     ],
