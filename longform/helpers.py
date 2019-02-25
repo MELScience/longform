@@ -5,7 +5,7 @@ from subprocess import PIPE, Popen
 from urllib.parse import urlparse
 
 import bleach
-import CommonMark as cm
+import commonmark as cm
 import html5lib
 import pyphen
 import smartypants
