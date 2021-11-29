@@ -4,6 +4,7 @@
   "description": "",
   "license": "ISC",
   "dependencies": {
-    "mathjax-node": "0.5.2"
+    "mathjax-node": "0.5.2",
+    "xml-mapping": "^1.7.1"
   }
 }

@@ -8,3 +8,5 @@ django_longform.egg-info/
 dist/
 build/
 db.sqlite3
+.idea/
+data-sample.js

@@ -10,6 +10,7 @@ from django.db import models
 
 
 class LongformModel(models.Model):
+    id = models.AutoField(primary_key=True)
     text_raw = models.TextField()
     text = models.TextField()
 
@@ -18,6 +19,7 @@ class LongformModel(models.Model):
 
 
 class LongformModelArgs(models.Model):
+    id = models.AutoField(primary_key=True)
     text_raw = models.TextField()
     text = models.TextField()
 

@@ -5,15 +5,23 @@ from ..fields import LongformField
 
 
 class LongformModel(models.Model):
+    id = models.AutoField(primary_key=True)
     text_raw = models.TextField()
     text = LongformField(raw_field='text_raw')
 
+    class Meta:
+        managed = False
+
 
 class LongformModelArgs(models.Model):
+    id = models.AutoField(primary_key=True)
     text_raw = models.TextField()
     text = LongformField(raw_field='text_raw',
                          sanitize=False,
                          strip_outer_p=True)
+
+    class Meta:
+        managed = False
 
 
 class LongformFieldTestCase(TestCase):

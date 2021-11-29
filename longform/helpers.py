@@ -1,5 +1,4 @@
 import re
-
 from functools import partial
 from subprocess import PIPE, Popen
 from urllib.parse import urlparse
@@ -9,7 +8,6 @@ import commonmark as cm
 import html5lib
 import pyphen
 import smartypants
-
 from django.apps import apps
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
